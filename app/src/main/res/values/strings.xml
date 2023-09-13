@@ -1,0 +1,15 @@
+<resources>
+    <string name="app_name">JustDo App</string>
+    <string name="hello_text">Hello!</string>
+    <string name="my_name">My Name</string>
+    <string name="search_medical">search medical</string>
+    <string name="category_design">Design</string>
+    <string name="category_meeting">Meeting</string>
+    <string name="category_learning">Learning</string>
+    <string name="category_text">Category</string>
+    <string name="number_of_task_text">5</string>
+    <string name="task_text">Task</string>
+    <string name="today_s_task_text">Today\'s Task</string>
+    <string name="completed_task_number_text">2</string>
+    <string name="completed_text">completed</string>
+</resources>
