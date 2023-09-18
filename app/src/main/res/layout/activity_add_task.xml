@@ -1,0 +1,242 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context=".AddTaskActivity"
+        android:background="@drawable/app_theme">
+
+        <TextView
+            android:id="@+id/addNewTask_tv"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:text="Add New Task"
+            android:textColor="@color/white"
+            android:textSize="22sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toStartOf="@+id/guidelineEnd"
+            app:layout_constraintStart_toStartOf="@id/guidelineStart"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_marginTop="24dp"
+            app:layout_constraintTop_toBottomOf="@id/addNewTask_tv"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="@id/guidelineStart"
+            app:layout_constraintEnd_toStartOf="@id/guidelineEnd"
+            android:background="@drawable/background_bottom_sheet">
+
+            <TextView
+                android:id="@+id/taskTitle_tv"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:layout_marginStart="20dp"
+                android:layout_marginEnd="20dp"
+                android:text="Title"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent" />
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/taskTitle_outline"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:elevation="6dp"
+                app:boxCornerRadiusTopEnd="8dp"
+                app:boxCornerRadiusTopStart="8dp"
+                app:boxCornerRadiusBottomEnd="8dp"
+                app:boxCornerRadiusBottomStart="8dp"
+                app:layout_constraintEnd_toEndOf="@id/taskTitle_tv"
+                app:layout_constraintStart_toStartOf="@+id/taskTitle_tv"
+                app:layout_constraintTop_toBottomOf="@+id/taskTitle_tv">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/taskTitle_et"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="start"
+                    android:hint="Title"
+                    android:inputType="text"
+                    android:textColor="@color/black"
+                    android:textColorHint="@color/black"
+                    android:paddingTop="4dp" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <TextView
+                android:id="@+id/taskDate_tv"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="Due Date"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:layout_marginTop="16dp"
+                app:layout_constraintTop_toBottomOf="@id/taskTitle_outline"
+                app:layout_constraintStart_toStartOf="@id/taskTitle_outline"
+                app:layout_constraintEnd_toEndOf="@id/taskTitle_outline" />
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/taskDate_outline"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:elevation="6dp"
+                app:boxCornerRadiusTopEnd="8dp"
+                app:boxCornerRadiusTopStart="8dp"
+                app:boxCornerRadiusBottomEnd="8dp"
+                app:boxCornerRadiusBottomStart="8dp"
+                app:layout_constraintEnd_toEndOf="@id/taskDate_tv"
+                app:layout_constraintStart_toStartOf="@+id/taskDate_tv"
+                app:layout_constraintTop_toBottomOf="@+id/taskDate_tv">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/taskDate_et"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="start"
+                    android:hint="Today"
+                    android:inputType="text"
+                    android:textColor="@color/black"
+                    android:textColorHint="@color/black"
+                    android:paddingTop="4dp" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+
+            <TextView
+                android:id="@+id/category_tv"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="@string/category_text"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                app:layout_constraintEnd_toEndOf="@+id/taskDate_outline"
+                app:layout_constraintStart_toStartOf="@+id/taskDate_outline"
+                app:layout_constraintTop_toBottomOf="@id/taskDate_outline" />
+
+            <com.google.android.material.chip.ChipGroup
+                android:id="@+id/chipGroup"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:background="@color/white"
+                android:padding="8dp"
+                app:layout_constraintEnd_toEndOf="@+id/category_tv"
+                app:layout_constraintStart_toStartOf="@+id/category_tv"
+                app:layout_constraintTop_toBottomOf="@id/category_tv">
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/designChep"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/category_design"
+                    android:backgroundTint="@color/gray_light"
+                    app:checkedIconTint="@color/purple"
+                    android:textSize="20sp" />
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/learningChip"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:backgroundTint="@color/gray_light"
+                    android:layout_marginStart="8dp"
+                    android:text="@string/category_learning"
+                    app:checkedIconTint="@color/purple"
+                    android:textSize="20sp" />
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/meetingChip"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:backgroundTint="@color/gray_light"
+                    android:layout_marginStart="8dp"
+                    android:text="@string/category_meeting"
+                    app:checkedIconTint="@color/purple"
+                    android:textSize="20sp" />
+            </com.google.android.material.chip.ChipGroup>
+
+            <TextView
+                android:id="@+id/taskDescription_tv"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="Description"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:layout_marginTop="16dp"
+                app:layout_constraintTop_toBottomOf="@id/chipGroup"
+                app:layout_constraintStart_toStartOf="@id/chipGroup"
+                app:layout_constraintEnd_toEndOf="@id/chipGroup" />
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/taskDescription_outline"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:elevation="6dp"
+                app:boxCornerRadiusTopEnd="8dp"
+                app:boxCornerRadiusTopStart="8dp"
+                app:boxCornerRadiusBottomEnd="8dp"
+                app:boxCornerRadiusBottomStart="8dp"
+                app:layout_constraintEnd_toEndOf="@id/taskDescription_tv"
+                app:layout_constraintStart_toStartOf="@+id/taskDescription_tv"
+                app:layout_constraintTop_toBottomOf="@+id/taskDescription_tv">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/taskDescription_et"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="start"
+                    android:hint="Description"
+                    android:inputType="text"
+                    android:textColor="@color/black"
+                    android:textColorHint="@color/black"
+                    android:paddingTop="4dp" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toBottomOf="@id/taskDescription_outline"
+                app:layout_constraintStart_toStartOf="@id/taskDescription_outline"
+                app:layout_constraintEnd_toEndOf="@id/taskDescription_outline"
+                android:text="Create New Task"
+                android:textAllCaps="false"
+                android:textSize="20sp"
+                android:textColor="@color/white"
+                android:textStyle="bold"
+                android:background="@drawable/background_add_button"
+                android:layout_marginTop="24dp" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guidelineStart"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent="0.05109489" />
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guidelineEnd"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent="0.95" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

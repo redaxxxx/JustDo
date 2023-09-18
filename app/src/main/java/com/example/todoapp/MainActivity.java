@@ -7,6 +7,9 @@ import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 
 import com.example.todoapp.adapters.CategoryAdapter;
@@ -67,7 +70,6 @@ public class MainActivity extends AppCompatActivity {
                     bottomSheetBehavior.setPeekHeight(600);
                 }
             }
-
             @Override
             public void onSlide(@NonNull View bottomSheet, float slideOffset) {
 

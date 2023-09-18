@@ -12,4 +12,5 @@
     <string name="today_s_task_text">Today\'s Task</string>
     <string name="completed_task_number_text">2</string>
     <string name="completed_text">completed</string>
+    <string name="task_description_text_hint">Task Description</string>
 </resources>
