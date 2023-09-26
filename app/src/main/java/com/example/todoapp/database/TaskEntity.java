@@ -5,6 +5,7 @@ import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
 import java.time.LocalDate;
+import java.util.Date;
 
 @Entity(tableName = "taskTable")
 public class TaskEntity {
@@ -14,8 +15,7 @@ public class TaskEntity {
     private String taskName;
     private String taskDescription;
     private String categoryName;
-    private LocalDate datePicker;
-
+    private String datePicker;
 
     public int getId() {
         return id;
@@ -49,11 +49,11 @@ public class TaskEntity {
         this.categoryName = categoryName;
     }
 
-    public LocalDate getDatePicker() {
+    public String getDatePicker() {
         return datePicker;
     }
 
-    public void setDatePicker(LocalDate datePicker) {
+    public void setDatePicker(String datePicker) {
         this.datePicker = datePicker;
     }
 }

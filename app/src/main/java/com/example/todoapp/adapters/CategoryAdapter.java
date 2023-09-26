@@ -8,14 +8,18 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.todoapp.databinding.CategoryItemBinding;
 import com.example.todoapp.model.Category;
+import com.example.todoapp.utils.CategoryClickListener;
+
 import java.util.List;
 
 public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.CategoryHolder> {
 
     private List<Category> categoryList;
+    private CategoryClickListener categoryClickListener;
 
-    public CategoryAdapter(List<Category> categoryList){
+    public CategoryAdapter(List<Category> categoryList, CategoryClickListener categoryClickListener){
         this.categoryList = categoryList;
+        this.categoryClickListener = categoryClickListener;
     }
 
     @NonNull
@@ -35,6 +39,9 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.Catego
         holder.binding.cardView.setCardBackgroundColor(category.getColor());
 
         holder.binding.iconPlus.setTag(position);
+        holder.binding.iconPlus.setOnClickListener(view -> {
+            categoryClickListener.categoryOnClick(category.getCategoryName());
+        });
     }
 
     @Override

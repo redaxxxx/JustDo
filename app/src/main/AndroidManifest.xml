@@ -13,13 +13,16 @@
         android:theme="@style/Theme.ToDoApp"
         tools:targetApi="31">
         <activity
-            android:name=".AddTaskActivity"
+            android:name=".ui.activities.TaskCategoriesActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.activities.AddTaskActivity"
             android:exported="false" />
         <activity
             android:name=".TrackTasksActivity"
             android:exported="false" />
         <activity
-            android:name=".MainActivity"
+            android:name=".ui.activities.MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

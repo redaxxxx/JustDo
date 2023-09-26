@@ -1,14 +1,17 @@
 package com.example.todoapp;
 
+import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
 import com.example.todoapp.database.AppDatabase;
 import com.example.todoapp.database.TaskEntity;
+import com.example.todoapp.model.Task;
 import com.example.todoapp.utils.AppExecutors;
+
+import java.util.List;
 
 public class Repository {
     private AppDatabase database;
-    private Context context;
     public Repository(AppDatabase database){
         this.database = database;
     }
@@ -19,5 +22,13 @@ public class Repository {
                 database.taskDao().addTask(taskEntity);
             }
         });
+    }
+
+    public LiveData<List<TaskEntity>> getTaskOfCategory(String categoryName){
+        return database.taskDao().getTasksOfCategory(categoryName);
+    }
+
+    public void deleteTask(TaskEntity taskEntity){
+        database.taskDao().DeleteTask(taskEntity);
     }
 }

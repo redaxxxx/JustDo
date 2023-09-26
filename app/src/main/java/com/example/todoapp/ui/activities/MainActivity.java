@@ -1,31 +1,34 @@
-package com.example.todoapp;
+package com.example.todoapp.ui.activities;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
+import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
+import android.content.Intent;
 import android.os.Bundle;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 
+import com.example.todoapp.R;
 import com.example.todoapp.adapters.CategoryAdapter;
-import com.example.todoapp.adapters.TodayTaskAdapter;
+import com.example.todoapp.adapters.TaskAdapter;
+import com.example.todoapp.database.TaskEntity;
 import com.example.todoapp.databinding.ActivityMainBinding;
 import com.example.todoapp.model.Category;
-import com.example.todoapp.model.TodayTask;
+import com.example.todoapp.model.Task;
+import com.example.todoapp.utils.CategoryClickListener;
+import com.example.todoapp.utils.Constants;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements CategoryClickListener {
 
     private List<Category> categoryList;
-    private List<TodayTask> todayTaskList;
+    private List<Task> taskList;
     private ActivityMainBinding binding;
     private BottomSheetBehavior bottomSheetBehavior;
     @Override
@@ -43,21 +46,9 @@ public class MainActivity extends AppCompatActivity {
         categoryList.add(new Category(R.drawable.carbon_image, getResources().getString(R.string.category_learning),
                 2, getResources().getColor(R.color.green)));
 
-        todayTaskList = new ArrayList<>();
-        todayTaskList.add(new TodayTask(R.drawable.fa_paint, getResources().getString(R.string.category_design),
-                1,3 , getResources().getColor(R.color.light_red),
-                getResources().getColor(R.color.red)));
 
-        todayTaskList.add(new TodayTask(R.drawable.healthicons_group, getResources().getString(R.string.category_meeting),
-                2,2, getResources().getColor(R.color.light_yellow),
-                getResources().getColor(R.color.yellow)));
-
-        todayTaskList.add(new TodayTask(R.drawable.carbon_image, getResources().getString(R.string.category_learning),
-                3,1, getResources().getColor(R.color.light_green),
-                getResources().getColor(R.color.green)));
 
         prepareCategoryRecyclerView(categoryList);
-        prepareTodayTaskRecyclerView(todayTaskList);
 
         bottomSheetBehavior = BottomSheetBehavior.from(binding.bottomSheet);
         bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
@@ -65,7 +56,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onStateChanged(@NonNull View bottomSheet, int newState) {
                 if (newState == BottomSheetBehavior.STATE_COLLAPSED){
-                    bottomSheetBehavior.setPeekHeight(300);
+                    bottomSheetBehavior.setPeekHeight(600);
                 } if (newState == BottomSheetBehavior.STATE_EXPANDED){
                     bottomSheetBehavior.setPeekHeight(600);
                 }
@@ -76,14 +67,18 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        binding.addButton.setOnClickListener(view -> {
+            startActivity(new Intent(MainActivity.this, AddTaskActivity.class));
+        });
+
     }
 
-    private void prepareTodayTaskRecyclerView(List<TodayTask> todayTaskList){
+    private void prepareTodayTaskRecyclerView(List<TaskEntity> taskList){
         binding.todayTaskRv.setLayoutManager(new LinearLayoutManager(this,
                 LinearLayoutManager.VERTICAL, false));
         binding.todayTaskRv.setItemAnimator(new DefaultItemAnimator());
         binding.todayTaskRv.setHasFixedSize(true);
-        TodayTaskAdapter adapter = new TodayTaskAdapter(todayTaskList);
+        TaskAdapter adapter = new TaskAdapter(taskList);
         binding.todayTaskRv.setAdapter(adapter);
     }
 
@@ -93,7 +88,18 @@ public class MainActivity extends AppCompatActivity {
         binding.categoryRv.setLayoutManager(new LinearLayoutManager(this,
                 LinearLayoutManager.HORIZONTAL, false));
 
-        CategoryAdapter adapter = new CategoryAdapter(categoryList);
+        CategoryAdapter adapter = new CategoryAdapter(categoryList,this);
         binding.categoryRv.setAdapter(adapter);
     }
+
+
+    //Here problem with transaction to fragments(Design, Learning, Meeting)
+    @Override
+    public void categoryOnClick(String categoryName) {
+        Intent intent = new Intent(MainActivity.this, TaskCategoriesActivity.class);
+        intent.putExtra(Constants.CATEGORY_NAME, categoryName);
+        startActivity(intent);
+    }
+
+
 }

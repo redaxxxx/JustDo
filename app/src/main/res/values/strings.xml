@@ -13,4 +13,7 @@
     <string name="completed_task_number_text">2</string>
     <string name="completed_text">completed</string>
     <string name="task_description_text_hint">Task Description</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="design_tasks_text">Design Tasks</string>
 </resources>
