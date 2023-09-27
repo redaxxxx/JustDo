@@ -77,7 +77,7 @@ public class DesignFragment extends Fragment {
         binding.designTaskRv.setHasFixedSize(true);
         binding.designTaskRv.setItemAnimator(new DefaultItemAnimator());
 
-        taskAdapter = new TaskAdapter(taskList);
+        taskAdapter = new TaskAdapter(taskList, "Design");
         binding.designTaskRv.setAdapter(taskAdapter);
     }
 }

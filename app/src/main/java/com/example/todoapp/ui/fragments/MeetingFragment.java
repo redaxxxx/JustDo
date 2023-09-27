@@ -30,6 +30,8 @@ import java.util.List;
 public class MeetingFragment extends Fragment {
     private FragmentMeetingBinding binding;
     private TaskViewModel viewModel;
+    private List<TaskEntity> taskList;
+    private TaskAdapter taskAdapter;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -76,7 +78,7 @@ public class MeetingFragment extends Fragment {
         binding.meetingTaskRv.setHasFixedSize(true);
         binding.meetingTaskRv.setItemAnimator(new DefaultItemAnimator());
 
-        taskAdapter = new TaskAdapter(taskList);
+        taskAdapter = new TaskAdapter(taskList, "Meeting");
         binding.meetingTaskRv.setAdapter(taskAdapter);
     }
 }

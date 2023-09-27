@@ -28,6 +28,10 @@ public class Repository {
         return database.taskDao().getTasksOfCategory(categoryName);
     }
 
+    public LiveData<List<TaskEntity>> getTodayTasks(String datePicker){
+        return database.taskDao().getTodayTasks(datePicker);
+    }
+
     public void deleteTask(TaskEntity taskEntity){
         database.taskDao().DeleteTask(taskEntity);
     }

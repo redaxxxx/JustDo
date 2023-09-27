@@ -17,6 +17,9 @@ public interface TaskDao {
     @Query("SELECT * FROM taskTable WHERE categoryName=:categoryName")
     LiveData<List<TaskEntity>> getTasksOfCategory(String categoryName);
 
+    @Query("SELECT * FROM taskTable WHERE datePicker=:datePicker")
+    LiveData<List<TaskEntity>> getTodayTasks(String datePicker);
+
     @Delete
     void DeleteTask(TaskEntity taskEntity);
 }

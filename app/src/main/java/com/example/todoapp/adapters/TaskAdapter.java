@@ -6,6 +6,7 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.todoapp.R;
 import com.example.todoapp.database.TaskEntity;
 import com.example.todoapp.databinding.TaskItemBinding;
 import java.util.List;
@@ -13,7 +14,9 @@ import java.util.List;
 public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TodayTaskHolder> {
 
     private List<TaskEntity> taskList;
-    public TaskAdapter(List<TaskEntity> taskList) {
+    private String categoryName;
+    public TaskAdapter(List<TaskEntity> taskList, String categoryName) {
+        this.categoryName = categoryName;
         this.taskList = taskList;
     }
 
@@ -30,6 +33,18 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TodayTaskHolde
 
         holder.binding.taskNameTv.setText(task.getTaskName());
         holder.binding.taskDescriptionTV.setText(task.getTaskDescription());
+
+        switch (categoryName){
+            case "Design":
+                holder.binding.categoryImg.setImageResource(R.drawable.fa_paint);
+                break;
+            case "Meeting":
+                holder.binding.categoryImg.setImageResource(R.drawable.healthicons_group);
+                break;
+            case "Learning":
+                holder.binding.categoryImg.setImageResource(R.drawable.carbon_image);
+                break;
+        }
     }
 
     @Override

@@ -14,6 +14,7 @@ import java.util.List;
 public class TaskViewModel extends ViewModel {
     private Repository repository;
     private LiveData<List<TaskEntity>> taskLiveData;
+    private LiveData<List<TaskEntity>> todayTasksLiveData;
     public TaskViewModel(Repository repository){
         this.repository = repository;
     }
@@ -28,6 +29,11 @@ public class TaskViewModel extends ViewModel {
     public LiveData<List<TaskEntity>> getTasksOfCategory(String categoryName){
         taskLiveData = repository.getTaskOfCategory(categoryName);
         return taskLiveData;
+    }
+
+    public LiveData<List<TaskEntity>> getTodayTasks(String datePicker){
+        todayTasksLiveData = repository.getTodayTasks(datePicker);
+        return todayTasksLiveData;
     }
 
 

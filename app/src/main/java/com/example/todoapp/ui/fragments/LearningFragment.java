@@ -77,7 +77,7 @@ public class LearningFragment extends Fragment {
         binding.learningTaskRv.setHasFixedSize(true);
         binding.learningTaskRv.setItemAnimator(new DefaultItemAnimator());
 
-        taskAdapter = new TaskAdapter(taskList);
+        taskAdapter = new TaskAdapter(taskList, "Learning");
         binding.learningTaskRv.setAdapter(taskAdapter);
     }
 }
