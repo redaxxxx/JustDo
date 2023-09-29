@@ -8,15 +8,17 @@
 
     <androidx.cardview.widget.CardView
         android:id="@+id/cardView"
-        android:layout_width="145dp"
-        android:layout_height="175dp"
+        android:layout_width="135dp"
+        android:layout_height="170dp"
         app:cardUseCompatPadding="true"
         app:cardCornerRadius="15dp">
 
         <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/itemLayout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:elevation="4dp">
+            android:elevation="4dp"
+            android:background="@drawable/design_backgeound">
 
             <ImageView
                 android:id="@+id/category_img"

@@ -6,6 +6,7 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.todoapp.R;
 import com.example.todoapp.databinding.CategoryItemBinding;
 import com.example.todoapp.model.Category;
 import com.example.todoapp.utils.CategoryClickListener;
@@ -36,7 +37,7 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.Catego
         holder.binding.categoryImg.setImageResource(category.getCategoryImage());
         holder.binding.categoryName.setText(category.getCategoryName());
         holder.binding.numberOfTaskTv.setText(String.valueOf(category.getNumberTask()));
-        holder.binding.cardView.setCardBackgroundColor(category.getColor());
+        holder.binding.itemLayout.setBackgroundResource(category.getColor());
 
         holder.binding.iconPlus.setTag(position);
         holder.binding.iconPlus.setOnClickListener(view -> {

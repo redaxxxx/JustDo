@@ -1,5 +1,6 @@
 package com.example.todoapp.ui.fragments;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -22,12 +23,15 @@ import com.example.todoapp.adapters.TaskAdapter;
 import com.example.todoapp.database.AppDatabase;
 import com.example.todoapp.database.TaskEntity;
 import com.example.todoapp.databinding.FragmentLearningBinding;
+import com.example.todoapp.ui.activities.AddTaskActivity;
+import com.example.todoapp.utils.Constants;
+import com.example.todoapp.utils.ItemOnClickListener;
 import com.example.todoapp.viewModel.TaskViewModel;
 import com.example.todoapp.viewModel.TaskViewModelFactory;
 
 import java.util.List;
 
-public class LearningFragment extends Fragment {
+public class LearningFragment extends Fragment implements ItemOnClickListener {
 
     private FragmentLearningBinding binding;
     private TaskViewModel viewModel;
@@ -41,6 +45,8 @@ public class LearningFragment extends Fragment {
         AppDatabase database = AppDatabase.getmInstance(getActivity());
         Repository repository = new Repository(database);
         TaskViewModelFactory factory = new TaskViewModelFactory(repository);
+
+        setItemtouchCallback();
 
         viewModel = new ViewModelProvider(this, factory).get(TaskViewModel.class);
         viewModel.getTasksOfCategory("Learning").observe(getViewLifecycleOwner(), new Observer<List<TaskEntity>>() {
@@ -69,6 +75,8 @@ public class LearningFragment extends Fragment {
                 taskAdapter.notifyDataSetChanged();
             }
         };
+        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(simpleCallback);
+        itemTouchHelper.attachToRecyclerView(binding.learningTaskRv);
     }
 
     private void prepareRecyclerView(List<TaskEntity> taskList){
@@ -77,7 +85,14 @@ public class LearningFragment extends Fragment {
         binding.learningTaskRv.setHasFixedSize(true);
         binding.learningTaskRv.setItemAnimator(new DefaultItemAnimator());
 
-        taskAdapter = new TaskAdapter(taskList, "Learning");
+        taskAdapter = new TaskAdapter(getActivity(), taskList, this);
         binding.learningTaskRv.setAdapter(taskAdapter);
+    }
+
+    @Override
+    public void itemOnClickListener(int taskId) {
+        Intent intent = new Intent(getActivity(), AddTaskActivity.class);
+        intent.putExtra(Constants.TASK_ID, taskId);
+        startActivity(intent);
     }
 }

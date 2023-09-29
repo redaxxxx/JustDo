@@ -15,12 +15,18 @@ public class TaskViewModel extends ViewModel {
     private Repository repository;
     private LiveData<List<TaskEntity>> taskLiveData;
     private LiveData<List<TaskEntity>> todayTasksLiveData;
+    private LiveData<TaskEntity> taskEntityLiveData;
     public TaskViewModel(Repository repository){
         this.repository = repository;
     }
 
     public void insertTask(TaskEntity taskEntity){
         repository.insertTask(taskEntity);
+    }
+
+    public int updateTask(TaskEntity taskEntity){
+        int rowUpdated = repository.updateTask(taskEntity);
+        return rowUpdated;
     }
     public void deleteTask(TaskEntity taskEntity){
         repository.deleteTask(taskEntity);
@@ -34,6 +40,11 @@ public class TaskViewModel extends ViewModel {
     public LiveData<List<TaskEntity>> getTodayTasks(String datePicker){
         todayTasksLiveData = repository.getTodayTasks(datePicker);
         return todayTasksLiveData;
+    }
+
+    public LiveData<TaskEntity> getTaskById(int id){
+        taskEntityLiveData = repository.getTaskById(id);
+        return taskEntityLiveData;
     }
 
 

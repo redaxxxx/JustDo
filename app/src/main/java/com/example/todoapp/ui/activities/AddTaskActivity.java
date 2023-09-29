@@ -3,6 +3,8 @@ package com.example.todoapp.ui.activities;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
 
 import android.app.DatePickerDialog;
 import android.content.Intent;
@@ -16,12 +18,16 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.CompoundButton;
 import android.widget.DatePicker;
+import android.widget.Toast;
 
 import com.example.todoapp.R;
 import com.example.todoapp.Repository;
 import com.example.todoapp.database.AppDatabase;
 import com.example.todoapp.database.TaskEntity;
 import com.example.todoapp.databinding.ActivityAddTaskBinding;
+import com.example.todoapp.utils.Constants;
+import com.example.todoapp.viewModel.TaskViewModel;
+import com.example.todoapp.viewModel.TaskViewModelFactory;
 import com.google.android.material.chip.ChipGroup;
 import com.google.android.material.datepicker.MaterialDatePicker;
 
@@ -39,6 +45,16 @@ public class AddTaskActivity extends AppCompatActivity {
     private int mYear;
     private int mMonth;
     private int mDay;
+    private boolean mTaskHasChanged = false;
+    private int taskId;
+    private TaskViewModel viewModel;
+    private View.OnTouchListener onTouchListener = new View.OnTouchListener() {
+        @Override
+        public boolean onTouch(View view, MotionEvent motionEvent) {
+            mTaskHasChanged = true;
+            return false;
+        }
+    };
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -48,6 +64,42 @@ public class AddTaskActivity extends AppCompatActivity {
         database = AppDatabase.getmInstance(this);
         repository = new Repository(database);
 
+        TaskViewModelFactory factory = new TaskViewModelFactory(repository);
+        viewModel = new ViewModelProvider(this, factory).get(TaskViewModel.class);
+
+
+        Intent intentToEditTask = getIntent();
+        if (intentToEditTask == null){
+            binding.addNewTaskTv.setText(getResources().getString(R.string.add_new_task_text));
+            binding.createNewTaskBtn.setText(getResources().getString(R.string.create_new_task_text));
+
+        }else{
+            int id = intentToEditTask.getIntExtra(Constants.TASK_ID, 1000);
+
+            binding.addNewTaskTv.setText(getResources().getString(R.string.edit_task_text));
+            binding.createNewTaskBtn.setText(getResources().getString(R.string.save_task));
+
+            viewModel.getTaskById(id).observe(this, new Observer<TaskEntity>() {
+                @Override
+                public void onChanged(TaskEntity taskEntity) {
+                    binding.taskTitleEt.setText(taskEntity.getTaskName());
+                    binding.taskDescriptionEt.setText(taskEntity.getTaskDescription());
+                    binding.taskDateEt.setText(taskEntity.getDatePicker());
+
+                    switch (taskEntity.getCategoryName()){
+                        case "Design":
+                            binding.designChep.setSelected(true);
+                            break;
+                        case "Learning":
+                            binding.learningChip.setSelected(true);
+                            break;
+                        case "Meeting":
+                            binding.meetingChip.setSelected(true);
+                            break;
+                    }
+                }
+            });
+        }
         //set Date time
         setDateTimeField();
 
@@ -79,11 +131,22 @@ public class AddTaskActivity extends AppCompatActivity {
         binding.createNewTaskBtn.setOnClickListener(view -> {
             if (isValidate()){
                 //insert data of task to database
-                insertTask();
-                startActivity(new Intent(AddTaskActivity.this, MainActivity.class));
+                if (intentToEditTask == null){
+                    insertTask();
+                }else {
+                    updateTask();
+                }
+                
             }
 
         });
+
+        binding.taskTitleEt.setOnTouchListener(onTouchListener);
+        binding.taskDateEt.setOnTouchListener(onTouchListener);
+        binding.taskDescriptionEt.setOnTouchListener(onTouchListener);
+        binding.meetingChip.setOnTouchListener(onTouchListener);
+        binding.designChep.setOnTouchListener(onTouchListener);
+        binding.learningChip.setOnTouchListener(onTouchListener);
     }
     //insert method
     private void insertTask(){
@@ -93,7 +156,22 @@ public class AddTaskActivity extends AppCompatActivity {
         taskEntity.setTaskDescription(binding.taskDescriptionEt.getText().toString());
         taskEntity.setDatePicker(binding.taskDateEt.getText().toString());
 
-        repository.insertTask(taskEntity);
+        viewModel.insertTask(taskEntity);
+//        repository.insertTask(taskEntity);
+        startActivity(new Intent(AddTaskActivity.this, MainActivity.class));
+    }
+
+    private void updateTask(){
+        TaskEntity taskEntity = new TaskEntity();
+        taskEntity.setTaskName(binding.taskTitleEt.getText().toString());
+        taskEntity.setCategoryName(categoryName);
+        taskEntity.setTaskDescription(binding.taskDescriptionEt.getText().toString());
+        taskEntity.setDatePicker(binding.taskDateEt.getText().toString());
+
+        int rowUpdated = viewModel.updateTask(taskEntity);
+
+        startActivity(new Intent(AddTaskActivity.this, MainActivity.class));
+        Toast.makeText(this, "Updating is successful "+ rowUpdated, Toast.LENGTH_SHORT).show();
     }
 
     //Set Date
@@ -108,7 +186,7 @@ public class AddTaskActivity extends AppCompatActivity {
             public void onDateSet(DatePicker datePicker, int selectedYear, int selectedMonth, int selectedDay) {
                 Calendar newDate = Calendar.getInstance();
                 newDate.set(selectedYear, selectedMonth, selectedDay);
-                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd-MM-yyyy");
+                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("MMMM d, yyyy");
                 final Date startDate = newDate.getTime();
                 String formateDate = simpleDateFormat.format(startDate);
 

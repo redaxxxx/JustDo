@@ -18,7 +18,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="24dp"
-            android:text="Add New Task"
+            android:text="@string/add_new_task_text"
             android:textColor="@color/white"
             android:textSize="22sp"
             android:textStyle="bold"

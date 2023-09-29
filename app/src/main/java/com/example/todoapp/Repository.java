@@ -32,7 +32,26 @@ public class Repository {
         return database.taskDao().getTodayTasks(datePicker);
     }
 
+    public LiveData<TaskEntity> getTaskById(int id){
+        return database.taskDao().getTaskById(id);
+    }
+    int rowUpdated;
+    public int updateTask(TaskEntity taskEntity){
+        AppExecutors.getInstance().diskIO().execute(new Runnable() {
+            @Override
+            public void run() {
+               rowUpdated  = database.taskDao().updateTask(taskEntity);
+            }
+        });
+        return rowUpdated;
+    }
     public void deleteTask(TaskEntity taskEntity){
-        database.taskDao().DeleteTask(taskEntity);
+        AppExecutors.getInstance().diskIO().execute(new Runnable() {
+            @Override
+            public void run() {
+                database.taskDao().DeleteTask(taskEntity);
+            }
+        });
+
     }
 }

@@ -4,11 +4,14 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import android.content.Intent;
+import android.icu.text.SimpleDateFormat;
+import android.icu.util.Calendar;
 import android.os.Bundle;
 import android.view.View;
 
@@ -23,20 +26,23 @@ import com.example.todoapp.model.Category;
 import com.example.todoapp.model.Task;
 import com.example.todoapp.utils.CategoryClickListener;
 import com.example.todoapp.utils.Constants;
+import com.example.todoapp.utils.ItemOnClickListener;
 import com.example.todoapp.viewModel.TaskViewModel;
 import com.example.todoapp.viewModel.TaskViewModelFactory;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity implements CategoryClickListener {
+public class MainActivity extends AppCompatActivity implements CategoryClickListener, ItemOnClickListener {
 
     private List<Category> categoryList;
     private List<Task> taskList;
     private ActivityMainBinding binding;
 
     private TaskViewModel viewModel;
+    String categoryName;
     private BottomSheetBehavior bottomSheetBehavior;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,17 +55,27 @@ public class MainActivity extends AppCompatActivity implements CategoryClickList
         viewModel = new ViewModelProvider(this, factory).get(TaskViewModel.class);
 
         //get current date as string and put it in getTodayTasks() method
+        Date date = Calendar.getInstance().getTime();
+        SimpleDateFormat dateFormat = new SimpleDateFormat("MMMM d, yyyy");
+        String dateFormatted = dateFormat.format(date);
+
+        viewModel.getTodayTasks(dateFormatted).observe(this, new Observer<List<TaskEntity>>() {
+            @Override
+            public void onChanged(List<TaskEntity> taskEntities) {
+                prepareTodayTaskRecyclerView(taskEntities);
+            }
+        });
 
 
         categoryList = new ArrayList<>();
         categoryList.add(new Category(R.drawable.fa_paint, getResources().getString(R.string.category_design),
-                5, getResources().getColor(R.color.red)));
+                5, R.drawable.design_backgeound));
 
         categoryList.add(new Category(R.drawable.healthicons_group, getResources().getString(R.string.category_meeting),
-                1, getResources().getColor(R.color.yellow)));
+                1, R.drawable.meeting_backgeound));
 
         categoryList.add(new Category(R.drawable.carbon_image, getResources().getString(R.string.category_learning),
-                2, getResources().getColor(R.color.green)));
+                2, R.drawable.learning_backgeound));
 
 
 
@@ -71,9 +87,9 @@ public class MainActivity extends AppCompatActivity implements CategoryClickList
             @Override
             public void onStateChanged(@NonNull View bottomSheet, int newState) {
                 if (newState == BottomSheetBehavior.STATE_COLLAPSED){
-                    bottomSheetBehavior.setPeekHeight(600);
+                    bottomSheetBehavior.setPeekHeight(500);
                 } if (newState == BottomSheetBehavior.STATE_EXPANDED){
-                    bottomSheetBehavior.setPeekHeight(600);
+                    bottomSheetBehavior.setPeekHeight(500);
                 }
             }
             @Override
@@ -88,14 +104,14 @@ public class MainActivity extends AppCompatActivity implements CategoryClickList
 
     }
 
-//    private void prepareTodayTaskRecyclerView(List<TaskEntity> taskList){
-//        binding.todayTaskRv.setLayoutManager(new LinearLayoutManager(this,
-//                LinearLayoutManager.VERTICAL, false));
-//        binding.todayTaskRv.setItemAnimator(new DefaultItemAnimator());
-//        binding.todayTaskRv.setHasFixedSize(true);
-//        TaskAdapter adapter = new TaskAdapter(taskList);
-//        binding.todayTaskRv.setAdapter(adapter);
-//    }
+    private void prepareTodayTaskRecyclerView(List<TaskEntity> taskList){
+        binding.todayTaskRv.setLayoutManager(new LinearLayoutManager(this,
+                LinearLayoutManager.VERTICAL, false));
+        binding.todayTaskRv.setItemAnimator(new DefaultItemAnimator());
+        binding.todayTaskRv.setHasFixedSize(true);
+        TaskAdapter adapter = new TaskAdapter(this, taskList, this);
+        binding.todayTaskRv.setAdapter(adapter);
+    }
 
     private void prepareCategoryRecyclerView(List<Category> categoryList){
         binding.categoryRv.setHasFixedSize(true);
@@ -108,7 +124,6 @@ public class MainActivity extends AppCompatActivity implements CategoryClickList
     }
 
 
-    //Here problem with transaction to fragments(Design, Learning, Meeting)
     @Override
     public void categoryOnClick(String categoryName) {
         Intent intent = new Intent(MainActivity.this, TaskCategoriesActivity.class);
@@ -116,5 +131,10 @@ public class MainActivity extends AppCompatActivity implements CategoryClickList
         startActivity(intent);
     }
 
-
+    @Override
+    public void itemOnClickListener(int taskId) {
+        Intent intent = new Intent(this, AddTaskActivity.class);
+        intent.putExtra(Constants.TASK_ID, taskId);
+        startActivity(intent);
+    }
 }

@@ -1,5 +1,6 @@
 package com.example.todoapp.ui.fragments;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -23,12 +24,15 @@ import com.example.todoapp.database.AppDatabase;
 import com.example.todoapp.database.TaskEntity;
 import com.example.todoapp.databinding.FragmentDesignBinding;
 import com.example.todoapp.model.Task;
+import com.example.todoapp.ui.activities.AddTaskActivity;
+import com.example.todoapp.utils.Constants;
+import com.example.todoapp.utils.ItemOnClickListener;
 import com.example.todoapp.viewModel.TaskViewModel;
 import com.example.todoapp.viewModel.TaskViewModelFactory;
 
 import java.util.List;
 
-public class DesignFragment extends Fragment {
+public class DesignFragment extends Fragment implements ItemOnClickListener {
     private FragmentDesignBinding binding;
     private TaskViewModel viewModel;
     private List<TaskEntity> taskList;
@@ -41,6 +45,8 @@ public class DesignFragment extends Fragment {
         AppDatabase database = AppDatabase.getmInstance(getActivity());
         Repository repository = new Repository(database);
         TaskViewModelFactory factory = new TaskViewModelFactory(repository);
+
+        setItemtouchCallback();
 
         viewModel = new ViewModelProvider(this, factory).get(TaskViewModel.class);
 
@@ -70,6 +76,8 @@ public class DesignFragment extends Fragment {
                 taskAdapter.notifyDataSetChanged();
             }
         };
+        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(simpleCallback);
+        itemTouchHelper.attachToRecyclerView(binding.designTaskRv);
     }
     private void prepareRecyclerView(List<TaskEntity> taskList){
         binding.designTaskRv.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL,
@@ -77,7 +85,14 @@ public class DesignFragment extends Fragment {
         binding.designTaskRv.setHasFixedSize(true);
         binding.designTaskRv.setItemAnimator(new DefaultItemAnimator());
 
-        taskAdapter = new TaskAdapter(taskList, "Design");
+        taskAdapter = new TaskAdapter(getActivity(), taskList, this);
         binding.designTaskRv.setAdapter(taskAdapter);
+    }
+
+    @Override
+    public void itemOnClickListener(int taskId) {
+        Intent intent = new Intent(getActivity(), AddTaskActivity.class);
+        intent.putExtra(Constants.TASK_ID, taskId);
+        startActivity(intent);
     }
 }
