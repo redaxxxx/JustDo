@@ -13,17 +13,35 @@
         tools:context=".ui.activities.AddTaskActivity"
         android:background="@drawable/app_theme">
 
+        <include
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            layout="@layout/dots_layout"
+            android:layout_marginTop="8dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"/>
+
+        <ImageView
+            android:id="@+id/backArrowBtn"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:src="@drawable/baseline_arrow_back_24"
+            app:layout_constraintStart_toStartOf="@id/guidelineStart"
+            app:layout_constraintBottom_toBottomOf="@id/addNewTask_tv"
+            app:layout_constraintTop_toTopOf="@id/addNewTask_tv" />
+
         <TextView
             android:id="@+id/addNewTask_tv"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="24dp"
+            android:layout_marginStart="8dp"
             android:text="@string/add_new_task_text"
             android:textColor="@color/white"
             android:textSize="22sp"
             android:textStyle="bold"
             app:layout_constraintEnd_toStartOf="@+id/guidelineEnd"
-            app:layout_constraintStart_toStartOf="@id/guidelineStart"
+            app:layout_constraintStart_toEndOf="@+id/backArrowBtn"
             app:layout_constraintTop_toTopOf="parent" />
 
         <androidx.constraintlayout.widget.ConstraintLayout
@@ -53,7 +71,7 @@
                 android:layout_marginTop="16dp"
                 android:layout_marginStart="20dp"
                 android:layout_marginEnd="20dp"
-                android:text="Title"
+                android:text="Task Name"
                 android:textSize="20sp"
                 android:textStyle="bold"
                 app:layout_constraintTop_toBottomOf="@id/lineUp"
@@ -65,7 +83,7 @@
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
+                android:layout_marginTop="8dp"
                 android:elevation="6dp"
                 app:boxCornerRadiusTopEnd="8dp"
                 app:boxCornerRadiusTopStart="8dp"
@@ -104,7 +122,7 @@
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
+                android:layout_marginTop="8dp"
                 android:elevation="6dp"
                 app:boxCornerRadiusTopEnd="8dp"
                 app:boxCornerRadiusTopStart="8dp"
@@ -144,7 +162,7 @@
                 android:id="@+id/chipGroup"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
+                android:layout_marginTop="8dp"
                 android:background="@color/white"
                 android:padding="8dp"
                 app:singleSelection="true"
@@ -155,36 +173,44 @@
                 <com.google.android.material.chip.Chip
                     android:id="@+id/designChep"
                     android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
+                    android:layout_height="45dp"
                     android:text="@string/category_design"
-                    style="@style/Widget.MaterialComponents.Chip.Choice"
-                    app:chipBackgroundColor="@color/gray_light"
-                    app:checkedIconTint="@color/purple"
-                    android:textSize="20sp"
-                    app:chipStrokeColor="@color/gray_light"/>
+                    style="@style/Widget.MaterialComponents.Chip.Filter"
+                    app:chipBackgroundColor="@color/purple_100"
+                    android:textColor="@color/purple_500"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    android:gravity="center"
+                    app:chipStrokeColor="@color/gray_light" />
 
                 <com.google.android.material.chip.Chip
                     android:id="@+id/learningChip"
                     android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    style="@style/Widget.MaterialComponents.Chip.Choice"
-                    app:chipBackgroundColor="@color/gray_light"
+                    android:layout_height="45dp"
+                    style="@style/Widget.MaterialComponents.Chip.Filter"
+                    app:chipBackgroundColor="@color/purple_100"
+                    android:textColor="@color/purple_500"
                     android:layout_marginStart="8dp"
                     android:text="@string/category_learning"
                     app:checkedIconTint="@color/purple"
-                    android:textSize="20sp"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    android:gravity="center"
                     app:chipStrokeColor="@color/gray_light"/>
 
                 <com.google.android.material.chip.Chip
                     android:id="@+id/meetingChip"
                     android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    style="@style/Widget.MaterialComponents.Chip.Choice"
-                    app:chipBackgroundColor="@color/gray_light"
+                    android:layout_height="45dp"
+                    style="@style/Widget.MaterialComponents.Chip.Filter"
+                    app:chipBackgroundColor="@color/purple_100"
+                    android:textColor="@color/purple_500"
                     android:layout_marginStart="8dp"
                     android:text="@string/category_meeting"
                     app:checkedIconTint="@color/purple"
-                    android:textSize="20sp"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    android:gravity="center"
                     app:chipStrokeColor="@color/gray_light"/>
             </com.google.android.material.chip.ChipGroup>
 
@@ -205,7 +231,7 @@
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
+                android:layout_marginTop="8dp"
                 android:elevation="6dp"
                 app:boxCornerRadiusTopEnd="8dp"
                 app:boxCornerRadiusTopStart="8dp"

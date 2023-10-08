@@ -8,11 +8,13 @@ import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,6 +27,7 @@ import com.example.todoapp.database.TaskEntity;
 import com.example.todoapp.databinding.FragmentDesignBinding;
 import com.example.todoapp.model.Task;
 import com.example.todoapp.ui.activities.AddTaskActivity;
+import com.example.todoapp.ui.activities.MainActivity;
 import com.example.todoapp.utils.Constants;
 import com.example.todoapp.utils.ItemOnClickListener;
 import com.example.todoapp.viewModel.TaskViewModel;
@@ -37,6 +40,9 @@ public class DesignFragment extends Fragment implements ItemOnClickListener {
     private TaskViewModel viewModel;
     private List<TaskEntity> taskList;
     private TaskAdapter taskAdapter;
+    private int numberOfTasks;
+    private boolean checkboxisChecked = false;
+    private int id;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -56,6 +62,14 @@ public class DesignFragment extends Fragment implements ItemOnClickListener {
                 taskList = taskEntities;
                 prepareRecyclerView(taskEntities);
             }
+        });
+
+        binding.addButton.setOnClickListener(view -> {
+            startActivity(new Intent(getActivity(), AddTaskActivity.class));
+        });
+
+        binding.backArrowBtn.setOnClickListener(view -> {
+            startActivity(new Intent(getActivity(), MainActivity.class));
         });
 
         return binding.getRoot();
@@ -91,6 +105,7 @@ public class DesignFragment extends Fragment implements ItemOnClickListener {
 
     @Override
     public void itemOnClickListener(int taskId) {
+        id = taskId;
         Intent intent = new Intent(getActivity(), AddTaskActivity.class);
         intent.putExtra(Constants.TASK_ID, taskId);
         startActivity(intent);

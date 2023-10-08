@@ -11,4 +11,9 @@
     <color name="green">#00CD5E</color>
     <color name="light_green">#C8E6C9</color>
     <color name="purple">#8A32CB</color>
+    <color name="Light_purple">#A865C9</color>
+    <color name="purple_100">#D1C4E9</color>
+    <color name="purple_500">#673AB7</color>
+
+
 </resources>

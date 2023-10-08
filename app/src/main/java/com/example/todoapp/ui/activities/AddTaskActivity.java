@@ -1,16 +1,16 @@
 package com.example.todoapp.ui.activities;
 
-import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
 import android.app.DatePickerDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.icu.text.SimpleDateFormat;
 import android.icu.util.Calendar;
-import android.icu.util.TimeZone;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
@@ -28,13 +28,7 @@ import com.example.todoapp.databinding.ActivityAddTaskBinding;
 import com.example.todoapp.utils.Constants;
 import com.example.todoapp.viewModel.TaskViewModel;
 import com.example.todoapp.viewModel.TaskViewModelFactory;
-import com.google.android.material.chip.ChipGroup;
-import com.google.android.material.datepicker.MaterialDatePicker;
-
 import java.util.Date;
-import java.util.List;
-import java.util.Locale;
-
 public class AddTaskActivity extends AppCompatActivity {
     private ActivityAddTaskBinding binding;
     private Repository repository;
@@ -46,7 +40,8 @@ public class AddTaskActivity extends AppCompatActivity {
     private int mMonth;
     private int mDay;
     private boolean mTaskHasChanged = false;
-    private int taskId;
+    private int taskId = -1;
+    private String taskCategory;
     private TaskViewModel viewModel;
     private View.OnTouchListener onTouchListener = new View.OnTouchListener() {
         @Override
@@ -67,52 +62,60 @@ public class AddTaskActivity extends AppCompatActivity {
         TaskViewModelFactory factory = new TaskViewModelFactory(repository);
         viewModel = new ViewModelProvider(this, factory).get(TaskViewModel.class);
 
-
+        //get intent from MainActivity to update task
         Intent intentToEditTask = getIntent();
-        if (intentToEditTask == null){
-            binding.addNewTaskTv.setText(getResources().getString(R.string.add_new_task_text));
-            binding.createNewTaskBtn.setText(getResources().getString(R.string.create_new_task_text));
 
-        }else{
-            int id = intentToEditTask.getIntExtra(Constants.TASK_ID, 1000);
+        if (intentToEditTask != null && intentToEditTask.hasExtra(Constants.TASK_ID)){
+            taskId = intentToEditTask.getIntExtra(Constants.TASK_ID, -1);
 
             binding.addNewTaskTv.setText(getResources().getString(R.string.edit_task_text));
             binding.createNewTaskBtn.setText(getResources().getString(R.string.save_task));
 
-            viewModel.getTaskById(id).observe(this, new Observer<TaskEntity>() {
+            viewModel.getTaskById(taskId).observe(this, new Observer<TaskEntity>() {
                 @Override
                 public void onChanged(TaskEntity taskEntity) {
                     binding.taskTitleEt.setText(taskEntity.getTaskName());
                     binding.taskDescriptionEt.setText(taskEntity.getTaskDescription());
                     binding.taskDateEt.setText(taskEntity.getDatePicker());
-
-                    switch (taskEntity.getCategoryName()){
+                    taskCategory = taskEntity.getCategoryName();
+                    switch (taskCategory){
                         case "Design":
                             binding.designChep.setSelected(true);
+                            binding.designChep.setChecked(true);
                             break;
                         case "Learning":
                             binding.learningChip.setSelected(true);
+                            binding.learningChip.setChecked(true);
                             break;
                         case "Meeting":
                             binding.meetingChip.setSelected(true);
+                            binding.meetingChip.setChecked(true);
                             break;
                     }
                 }
             });
+        }else {
+            binding.addNewTaskTv.setText(getResources().getString(R.string.add_new_task_text));
+            binding.createNewTaskBtn.setText(getResources().getString(R.string.create_new_task_text));
         }
+
         //set Date time
         setDateTimeField();
 
         //appear date picker when touch editText
-        binding.taskDateEt.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View view, MotionEvent motionEvent) {
-                datePickerDialog.show();
-                return false;
-            }
+        binding.taskDateEt.setOnClickListener(view -> {
+            datePickerDialog.show();
         });
 
-        //Get text of selected chip
+        binding.backArrowBtn.setOnClickListener(view -> {
+            if (mTaskHasChanged){
+                createDiscardEditAlertDialog();
+            }else {
+                startActivity(new Intent(AddTaskActivity.this, MainActivity.class));
+                finish();
+            }
+        });
+        //Get text of selected chip in chip group
         CompoundButton.OnCheckedChangeListener checkedChangeListener = new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
@@ -131,10 +134,13 @@ public class AddTaskActivity extends AppCompatActivity {
         binding.createNewTaskBtn.setOnClickListener(view -> {
             if (isValidate()){
                 //insert data of task to database
-                if (intentToEditTask == null){
+                Log.d(Constants.TAG, "Task Id is " + taskId);
+                if (taskId == -1){
                     insertTask();
+                    finish();
                 }else {
                     updateTask();
+                    finish();
                 }
                 
             }
@@ -142,11 +148,11 @@ public class AddTaskActivity extends AppCompatActivity {
         });
 
         binding.taskTitleEt.setOnTouchListener(onTouchListener);
-        binding.taskDateEt.setOnTouchListener(onTouchListener);
         binding.taskDescriptionEt.setOnTouchListener(onTouchListener);
         binding.meetingChip.setOnTouchListener(onTouchListener);
         binding.designChep.setOnTouchListener(onTouchListener);
         binding.learningChip.setOnTouchListener(onTouchListener);
+        binding.taskDateEt.setOnTouchListener(onTouchListener);
     }
     //insert method
     private void insertTask(){
@@ -155,7 +161,6 @@ public class AddTaskActivity extends AppCompatActivity {
         taskEntity.setCategoryName(categoryName);
         taskEntity.setTaskDescription(binding.taskDescriptionEt.getText().toString());
         taskEntity.setDatePicker(binding.taskDateEt.getText().toString());
-
         viewModel.insertTask(taskEntity);
 //        repository.insertTask(taskEntity);
         startActivity(new Intent(AddTaskActivity.this, MainActivity.class));
@@ -163,8 +168,9 @@ public class AddTaskActivity extends AppCompatActivity {
 
     private void updateTask(){
         TaskEntity taskEntity = new TaskEntity();
+        taskEntity.setId(taskId);
         taskEntity.setTaskName(binding.taskTitleEt.getText().toString());
-        taskEntity.setCategoryName(categoryName);
+        taskEntity.setCategoryName(taskCategory);
         taskEntity.setTaskDescription(binding.taskDescriptionEt.getText().toString());
         taskEntity.setDatePicker(binding.taskDateEt.getText().toString());
 
@@ -172,6 +178,31 @@ public class AddTaskActivity extends AppCompatActivity {
 
         startActivity(new Intent(AddTaskActivity.this, MainActivity.class));
         Toast.makeText(this, "Updating is successful "+ rowUpdated, Toast.LENGTH_SHORT).show();
+    }
+
+    //create AlertDialog
+    private void createDiscardEditAlertDialog(){
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle(getResources().getString(R.string.alert_dialog_title));
+        builder.setMessage("You haven't finished your task yet.Are you sure want to leave and discard your edit?");
+        builder.setPositiveButton("Discard", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                startActivity(new Intent(AddTaskActivity.this, MainActivity.class));
+                finish();
+            }
+        });
+        builder.setNegativeButton("Go back", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                if (dialogInterface != null){
+                    dialogInterface.dismiss();
+                }
+            }
+        });
+
+        AlertDialog dialog = builder.create();
+        dialog.show();
     }
 
     //Set Date
@@ -195,7 +226,7 @@ public class AddTaskActivity extends AppCompatActivity {
         },mYear, mMonth, mDay);
 
         datePickerDialog.setTitle("Select Date");
-        datePickerDialog.getDatePicker().setMaxDate(System.currentTimeMillis());
+//        datePickerDialog.getDatePicker().setMaxDate(System.currentTimeMillis());
     }
 
     // validate input text field
@@ -217,5 +248,25 @@ public class AddTaskActivity extends AppCompatActivity {
         }
 
         return true;
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (mTaskHasChanged){
+            createDiscardEditAlertDialog();
+        }else {
+            startActivity(new Intent(AddTaskActivity.this, MainActivity.class));
+            finish();
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
     }
 }

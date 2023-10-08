@@ -1,18 +1,25 @@
 package com.example.todoapp.ui.activities;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.icu.text.SimpleDateFormat;
 import android.icu.util.Calendar;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 
 import com.example.todoapp.R;
@@ -24,6 +31,7 @@ import com.example.todoapp.database.TaskEntity;
 import com.example.todoapp.databinding.ActivityMainBinding;
 import com.example.todoapp.model.Category;
 import com.example.todoapp.model.Task;
+import com.example.todoapp.utils.AppExecutors;
 import com.example.todoapp.utils.CategoryClickListener;
 import com.example.todoapp.utils.Constants;
 import com.example.todoapp.utils.ItemOnClickListener;
@@ -42,8 +50,12 @@ public class MainActivity extends AppCompatActivity implements CategoryClickList
     private ActivityMainBinding binding;
 
     private TaskViewModel viewModel;
-    String categoryName;
+    private int numberOfDesignTasks ;
+    private int numberOfMeetingTasks;
+    private int numberOfLearningTasks;
     private BottomSheetBehavior bottomSheetBehavior;
+    private int id;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -66,20 +78,19 @@ public class MainActivity extends AppCompatActivity implements CategoryClickList
             }
         });
 
+        AppExecutors.getInstance().diskIO().execute(new Runnable() {
+            @Override
+            public void run() {
+                numberOfDesignTasks = viewModel.getRowCount("Design");
+                numberOfLearningTasks = viewModel.getRowCount("Learning");
+                numberOfMeetingTasks = viewModel.getRowCount("Meeting");
+                prepareCategoryRecyclerView(numberOfDesignTasks, numberOfMeetingTasks, numberOfLearningTasks);
+                Log.d(Constants.TAG, "Row Count = " + numberOfDesignTasks);
+            }
+        });
 
-        categoryList = new ArrayList<>();
-        categoryList.add(new Category(R.drawable.fa_paint, getResources().getString(R.string.category_design),
-                5, R.drawable.design_backgeound));
+//        getRowCount();
 
-        categoryList.add(new Category(R.drawable.healthicons_group, getResources().getString(R.string.category_meeting),
-                1, R.drawable.meeting_backgeound));
-
-        categoryList.add(new Category(R.drawable.carbon_image, getResources().getString(R.string.category_learning),
-                2, R.drawable.learning_backgeound));
-
-
-
-        prepareCategoryRecyclerView(categoryList);
 
         bottomSheetBehavior = BottomSheetBehavior.from(binding.bottomSheet);
         bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
@@ -88,8 +99,9 @@ public class MainActivity extends AppCompatActivity implements CategoryClickList
             public void onStateChanged(@NonNull View bottomSheet, int newState) {
                 if (newState == BottomSheetBehavior.STATE_COLLAPSED){
                     bottomSheetBehavior.setPeekHeight(500);
-                } if (newState == BottomSheetBehavior.STATE_EXPANDED){
-                    bottomSheetBehavior.setPeekHeight(500);
+                }
+                if (newState == BottomSheetBehavior.STATE_EXPANDED){
+                    bottomSheetBehavior.setPeekHeight(550);
                 }
             }
             @Override
@@ -100,7 +112,9 @@ public class MainActivity extends AppCompatActivity implements CategoryClickList
 
         binding.addButton.setOnClickListener(view -> {
             startActivity(new Intent(MainActivity.this, AddTaskActivity.class));
+            finish();
         });
+
 
     }
 
@@ -113,7 +127,17 @@ public class MainActivity extends AppCompatActivity implements CategoryClickList
         binding.todayTaskRv.setAdapter(adapter);
     }
 
-    private void prepareCategoryRecyclerView(List<Category> categoryList){
+    private void prepareCategoryRecyclerView(int numberOfDesignTasks, int numberOfMeetingTasks, int numberOfLearningTasks){
+        List<Category> categoryList = new ArrayList<>();
+        categoryList.add(new Category(R.drawable.fa_paint, getResources().getString(R.string.category_design),
+                numberOfDesignTasks, R.drawable.design_backgeound));
+
+        categoryList.add(new Category(R.drawable.healthicons_group, getResources().getString(R.string.category_meeting),
+                numberOfMeetingTasks, R.drawable.meeting_backgeound));
+
+        categoryList.add(new Category(R.drawable.carbon_image, getResources().getString(R.string.category_learning),
+                numberOfLearningTasks, R.drawable.learning_backgeound));
+
         binding.categoryRv.setHasFixedSize(true);
         binding.categoryRv.setItemAnimator(new DefaultItemAnimator());
         binding.categoryRv.setLayoutManager(new LinearLayoutManager(this,
@@ -122,6 +146,7 @@ public class MainActivity extends AppCompatActivity implements CategoryClickList
         CategoryAdapter adapter = new CategoryAdapter(categoryList,this);
         binding.categoryRv.setAdapter(adapter);
     }
+
 
 
     @Override
@@ -133,8 +158,19 @@ public class MainActivity extends AppCompatActivity implements CategoryClickList
 
     @Override
     public void itemOnClickListener(int taskId) {
+        id = taskId;
         Intent intent = new Intent(this, AddTaskActivity.class);
         intent.putExtra(Constants.TASK_ID, taskId);
         startActivity(intent);
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
     }
 }

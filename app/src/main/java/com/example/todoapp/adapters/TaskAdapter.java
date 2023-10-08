@@ -1,15 +1,21 @@
 package com.example.todoapp.adapters;
 
 import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
+import android.graphics.Paint;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
+import android.widget.CompoundButton;
 
 import androidx.annotation.NonNull;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.todoapp.R;
 import com.example.todoapp.database.TaskEntity;
 import com.example.todoapp.databinding.TaskItemBinding;
+import com.example.todoapp.utils.Constants;
 import com.example.todoapp.utils.ItemOnClickListener;
 
 import java.util.List;
@@ -20,10 +26,13 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TodayTaskHolde
     private ItemOnClickListener onClickListener;
     private Context context;
     private String categoryName;
+    private SharedPreferences sharedPreferences;
     public TaskAdapter(Context context, List<TaskEntity> taskList,ItemOnClickListener onClickListener) {
         this.context = context;
         this.taskList = taskList;
         this.onClickListener = onClickListener;
+        sharedPreferences = context.getSharedPreferences("checkedTask",
+                Context.MODE_PRIVATE);
     }
 
     @NonNull
@@ -56,9 +65,29 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.TodayTaskHolde
                 break;
         }
 
-        holder.itemView.setOnClickListener(view -> {
-            onClickListener.itemOnClickListener(task.getId());
+        //problem here
+        holder.binding.checkbox.setTag(position);
+        boolean isChecked = sharedPreferences.getBoolean(String.valueOf(task.getId()), false);
+        if (isChecked){
+            holder.binding.taskNameTv.setPaintFlags(Paint.STRIKE_THRU_TEXT_FLAG);
+            holder.binding.taskDescriptionTV.setPaintFlags(Paint.STRIKE_THRU_TEXT_FLAG);
+            holder.binding.checkbox.setChecked(isChecked);
+
+        }else {
+            holder.itemView.setOnClickListener(view -> {
+                onClickListener.itemOnClickListener(task.getId());
+            });
+        }
+
+        holder.binding.checkbox.setOnClickListener(view -> {
+            holder.binding.taskNameTv.setPaintFlags(Paint.STRIKE_THRU_TEXT_FLAG);
+            holder.binding.taskDescriptionTV.setPaintFlags(Paint.STRIKE_THRU_TEXT_FLAG);
+            SharedPreferences.Editor editor = sharedPreferences.edit();
+            editor.putBoolean(String.valueOf(task.getId()), true);
+            editor.apply();
         });
+
+
     }
 
     @Override

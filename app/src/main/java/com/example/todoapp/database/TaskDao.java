@@ -30,4 +30,7 @@ public interface TaskDao {
 
     @Delete
     void DeleteTask(TaskEntity taskEntity);
+
+    @Query("SELECT COUNT(*) FROM taskTable WHERE categoryName= :categoryName")
+    int getRowCount(String categoryName);
 }

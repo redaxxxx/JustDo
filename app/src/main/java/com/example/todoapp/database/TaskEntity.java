@@ -1,6 +1,7 @@
 package com.example.todoapp.database;
 
 import androidx.annotation.NonNull;
+import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
@@ -16,7 +17,6 @@ public class TaskEntity {
     private String taskDescription;
     private String categoryName;
     private String datePicker;
-
     public int getId() {
         return id;
     }

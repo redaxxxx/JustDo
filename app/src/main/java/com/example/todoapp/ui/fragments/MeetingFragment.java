@@ -1,6 +1,8 @@
 package com.example.todoapp.ui.fragments;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -8,11 +10,13 @@ import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,6 +28,7 @@ import com.example.todoapp.database.AppDatabase;
 import com.example.todoapp.database.TaskEntity;
 import com.example.todoapp.databinding.FragmentMeetingBinding;
 import com.example.todoapp.ui.activities.AddTaskActivity;
+import com.example.todoapp.ui.activities.MainActivity;
 import com.example.todoapp.utils.Constants;
 import com.example.todoapp.utils.ItemOnClickListener;
 import com.example.todoapp.viewModel.TaskViewModel;
@@ -36,6 +41,9 @@ public class MeetingFragment extends Fragment implements ItemOnClickListener {
     private TaskViewModel viewModel;
     private List<TaskEntity> taskList;
     private TaskAdapter taskAdapter;
+    private int numberOfTasks;
+    private boolean checkboxisChecked;
+    private int id;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -54,8 +62,17 @@ public class MeetingFragment extends Fragment implements ItemOnClickListener {
             @Override
             public void onChanged(List<TaskEntity> taskEntities) {
                 taskList = taskEntities;
+                numberOfTasks = taskEntities.size();
                 prepareRecyclerView(taskEntities);
             }
+        });
+
+        binding.addButton.setOnClickListener(view -> {
+            startActivity(new Intent(getActivity(), AddTaskActivity.class));
+        });
+
+        binding.backArrowBtn.setOnClickListener(view -> {
+            startActivity(new Intent(getActivity(), MainActivity.class));
         });
 
         return binding.getRoot();
@@ -92,6 +109,7 @@ public class MeetingFragment extends Fragment implements ItemOnClickListener {
 
     @Override
     public void itemOnClickListener(int taskId) {
+        id = taskId;
         Intent intent = new Intent(getActivity(), AddTaskActivity.class);
         intent.putExtra(Constants.TASK_ID, taskId);
         startActivity(intent);

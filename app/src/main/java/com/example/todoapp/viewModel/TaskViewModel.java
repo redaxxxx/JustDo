@@ -47,5 +47,8 @@ public class TaskViewModel extends ViewModel {
         return taskEntityLiveData;
     }
 
+    public int getRowCount(String categoryName){
+        return repository.getRowCount(categoryName);
+    }
 
 }

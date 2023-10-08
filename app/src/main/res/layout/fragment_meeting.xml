@@ -13,19 +13,37 @@
         tools:context=".ui.fragments.DesignFragment"
         android:background="@drawable/app_theme">
 
+        <include
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            layout="@layout/dots_layout"
+            android:layout_marginTop="8dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"/>
+
+        <ImageView
+            android:id="@+id/backArrowBtn"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:src="@drawable/baseline_arrow_back_24"
+            android:layout_marginStart="24dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintBottom_toBottomOf="@id/meetingTaskText"
+            app:layout_constraintTop_toTopOf="@id/meetingTaskText" />
+
         <TextView
-            android:id="@+id/learningTaskText"
+            android:id="@+id/meetingTaskText"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="24dp"
-            android:layout_marginStart="24dp"
+            android:layout_marginStart="8dp"
             android:elevation="8dp"
             android:text="Meeting Task"
             android:textColor="@color/white"
             android:textSize="22sp"
             android:textStyle="bold"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/backArrowBtn"
             app:layout_constraintTop_toTopOf="parent" />
 
         <androidx.constraintlayout.widget.ConstraintLayout
@@ -35,7 +53,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/learningTaskText"
+            app:layout_constraintTop_toBottomOf="@id/meetingTaskText"
             android:background="@drawable/background_bottom_sheet">
 
             <ImageView
@@ -59,6 +77,17 @@
                 app:layout_constraintStart_toStartOf="@+id/guidelineStart"
                 app:layout_constraintTop_toBottomOf="@+id/lineUp" />
 
+            <androidx.appcompat.widget.AppCompatImageButton
+                android:id="@+id/addButton"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_marginEnd="24dp"
+                android:layout_marginBottom="24dp"
+                android:elevation="4dp"
+                android:src="@drawable/plus_icon"
+                android:background="@drawable/background_add_button"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"/>
 
             <ImageView
                 android:id="@+id/lineDown"

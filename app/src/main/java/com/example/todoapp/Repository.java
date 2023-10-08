@@ -12,6 +12,7 @@ import java.util.List;
 
 public class Repository {
     private AppDatabase database;
+    private int rowCount;;
     public Repository(AppDatabase database){
         this.database = database;
     }
@@ -35,16 +36,17 @@ public class Repository {
     public LiveData<TaskEntity> getTaskById(int id){
         return database.taskDao().getTaskById(id);
     }
-    int rowUpdated;
+    private int rowUpdated = 0;
     public int updateTask(TaskEntity taskEntity){
         AppExecutors.getInstance().diskIO().execute(new Runnable() {
             @Override
             public void run() {
-               rowUpdated  = database.taskDao().updateTask(taskEntity);
+               rowUpdated = database.taskDao().updateTask(taskEntity);
             }
         });
         return rowUpdated;
     }
+
     public void deleteTask(TaskEntity taskEntity){
         AppExecutors.getInstance().diskIO().execute(new Runnable() {
             @Override
@@ -53,5 +55,8 @@ public class Repository {
             }
         });
 
+    }
+    public int getRowCount(String categoryName){
+        return database.taskDao().getRowCount(categoryName);
     }
 }
